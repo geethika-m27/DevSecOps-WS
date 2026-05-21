@@ -1,7 +1,4 @@
 # Comprehensive Jenkins Master-Slave Architecture & Automation Guide
-
-This document provides the complete, production-ready blueprint for establishing an AWS-native Jenkins Master-Slave architecture, configuring global build tools, bypassing resource-level constraints, and implementing automated Git Webhook triggers.
-
 ---
 
 ## 🛠️ Phase 1: Prepare the Slave Node
