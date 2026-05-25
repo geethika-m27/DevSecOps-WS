@@ -51,6 +51,10 @@ trivy image [IMAGE_NAME]
 # Scan a local folder (Filesystem)
 trivy fs /path/to/project
 
+
 # Filter by Severity
 trivy image --severity HIGH,CRITICAL [IMAGE_NAME]
+
+trivy fs --severity HIGH,CRITICAL /path/to/project
+
 ```

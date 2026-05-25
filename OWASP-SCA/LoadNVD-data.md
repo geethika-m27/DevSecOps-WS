@@ -42,7 +42,7 @@ To avoid typing long flags every time, add this configuration to your `pom.xml`.
 <plugin>
     <groupId>org.owasp</groupId>
     <artifactId>dependency-check-maven</artifactId>
-    <version>11.1.0</version>
+    <version>12.2.0</version>
     <configuration>
         <autoUpdate>false</autoUpdate>
         <dataDirectory>${user.home}/.m2/repository/org/owasp/dependency-check-data/</dataDirectory>
