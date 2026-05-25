@@ -14,7 +14,8 @@ Instead of keeping the data in the `ubuntu` home folder, move it to a location t
 
 ```bash
 # Move the folder to the Jenkins library directory
-sudo cp -r /home/ubuntu/.m2/repository/org/owasp/dependency-check-data /var/lib/jenkins/
+sudo mkdir -p /var/lib/jenkins/.m2/repository/org/owasp
+sudo cp -r /home/ubuntu/.m2/repository/org/owasp/dependency-check-data /var/lib/jenkins/.m2/repository/org/owasp
 
 ```
 
@@ -24,19 +25,64 @@ Jenkins runs as its own user. You must transfer ownership of the data folder so 
 
 ```bash
 # Change ownership to the jenkins user and group
-sudo chown -R jenkins:jenkins /var/lib/jenkins/dependency-check-data
+sudo chown -R jenkins:jenkins /var/lib/jenkins/.m2
 
 ```
 
 ## Step 3: Update Jenkins Pipeline Stage
 
-Update the `-DdataDirectory` path in your Jenkinsfile to point to the new location. Since we disabled `autoUpdate`, ensure the path points to the specific version folder (e.g., `11.0`).
+Update the `-DdataDirectory` path in your Jenkinsfile to point to the new location. Since we disabled `autoUpdate`, ensure the path points to the specific version folder (e.g., `12.0`).
 
 ```groovy
 stage("OWASP Dependency Check Scan") {
     steps {
-        sh "mvn dependency-check:check -DautoUpdate=false -DdataDirectory=/var/lib/jenkins/dependency-check-data/12.0"
+
+        sh "mvn dependency-check:check"
+        // or
+        // sh "mvn clean verify"
+// or overrides
+        // sh "mvn dependency-check:check -DautoUpdate=false -DdataDirectory=/var/lib/jenkins/dependency-check-data/12.0"
     }
+    post {
+        always {
+            dependencyCheckPublisher pattern: '**/dependency-check-report.xml'
+        }
+    }
+}
+Important
+
+Also update your pom.xml formats section to include XML:
+
+<formats>
+    <format>HTML</format>
+    <format>JSON</format>
+    <format>XML</format>
+</formats>
+Install Jenkins Plugin
+
+Install:
+
+OWASP Dependency-Check Plugin
+
+from:
+
+Manage Jenkins → Plugins
+Your pipeline structure should become
+SCM-checkout
+Git-Leaks
+Build
+OWASP-Dependency-Check
+DockerImage
+Trivy-scan
+DockerPush
+Deploy
+
+Then Jenkins dashboard will display:
+
+separate OWASP stage
+vulnerability trends
+severity counts
+report links
 }
 
 ```
